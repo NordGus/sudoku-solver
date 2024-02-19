@@ -107,9 +107,9 @@ func TestBoard_isHorizontallyValid(t *testing.T) {
 			name:  "is not valid",
 			board: baseBoard,
 			args: args{
-				value: 7,
-				x:     2,
-				y:     0,
+				value: 8,
+				x:     4,
+				y:     4,
 			},
 			want: false,
 		},
@@ -150,8 +150,8 @@ func TestBoard_isVerticallyValid(t *testing.T) {
 			board: baseBoard,
 			args: args{
 				value: 8,
-				x:     2,
-				y:     0,
+				x:     4,
+				y:     2,
 			},
 			want: false,
 		},
