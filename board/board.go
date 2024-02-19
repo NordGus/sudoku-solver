@@ -41,7 +41,7 @@ func (board Board) PossibleValuesFor(x int, y int) []uint8 {
 	return values
 }
 
-// isHorizontallyValid checks that the given doesn't violate sudoku's
+// isHorizontallyValid checks that the given value doesn't violate sudoku's
 // horizontal rule.
 func (board Board) isHorizontallyValid(value uint8, x int, y int) bool {
 	for i := 0; i < 9; i++ {
@@ -57,7 +57,7 @@ func (board Board) isHorizontallyValid(value uint8, x int, y int) bool {
 	return true
 }
 
-// isVerticallyValid checks that the given doesn't violate sudoku's
+// isVerticallyValid checks that the given value doesn't violate sudoku's
 // vertical rule.
 func (board Board) isVerticallyValid(value uint8, x, y int) bool {
 	for i := 0; i < 9; i++ {
@@ -73,6 +73,8 @@ func (board Board) isVerticallyValid(value uint8, x, y int) bool {
 	return true
 }
 
+// isSectorValid checks that the given value doesn't violate sudoku's vertical
+// rule.
 func (board Board) isSectorValid(value uint8, x int, y int) bool {
 	var (
 		minX, maxX = getAxisLimits(x)
@@ -92,23 +94,6 @@ func (board Board) isSectorValid(value uint8, x int, y int) bool {
 	}
 
 	return true
-}
-
-// getAxisLimits is a helper function that helps determine the Board sector
-// boundaries for any axis. When n is the X position it will return the limits
-// for the X axis and vice versa.
-func getAxisLimits(n int) (bottom, upper int) {
-	bottom, upper = 6, 9
-
-	if n < 6 {
-		bottom, upper = 3, 6
-	}
-
-	if n < 3 {
-		bottom, upper = 0, 3
-	}
-
-	return
 }
 
 // Copy returns a new copy of the board
