@@ -122,3 +122,45 @@ func TestBoard_isHorizontallyValid(t *testing.T) {
 		})
 	}
 }
+
+func TestBoard_isVerticallyValid(t *testing.T) {
+	type args struct {
+		value uint8
+		x     int
+		y     int
+	}
+	tests := []struct {
+		name  string
+		board Board
+		args  args
+		want  bool
+	}{
+		{
+			name:  "is valid",
+			board: baseBoard,
+			args: args{
+				value: 9,
+				x:     2,
+				y:     0,
+			},
+			want: true,
+		},
+		{
+			name:  "is not valid",
+			board: baseBoard,
+			args: args{
+				value: 8,
+				x:     2,
+				y:     0,
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.board.isVerticallyValid(tt.args.value, tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("isVerticallyValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
