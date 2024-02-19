@@ -1,5 +1,11 @@
 package board
 
+const (
+	Width     = 9
+	Height    = 9
+	EmptyCell = 0
+)
+
 // Board is a data structure that represents a 9x9 sudoku board (with y major).
 //
 // Empty cells are stored as zeros, following sudoku's rule that cell must be
