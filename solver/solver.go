@@ -5,30 +5,40 @@ import (
 	"sync"
 )
 
+const (
+	buffSize = 5
+)
+
+// Solver is a simple wrapper for the board and call the solving algorithm.
 type Solver struct {
 	board board.Board
 }
 
+// New initializes a new Solver for the given board.
 func New(board board.Board) *Solver {
 	return &Solver{
 		board: board,
 	}
 }
 
+// Solve starts recursion to solve the given board and works as an orchester
+// for the concurrent solving process.
 func (s Solver) Solve() []board.Board {
 	var (
-		solutions = make(chan board.Board, 3)
-		output    = make([]board.Board, 0, 5)
+		solutions = make(chan board.Board, buffSize)
+		output    = make([]board.Board, 0, buffSize)
 		wg        = new(sync.WaitGroup)
 	)
 
-	wg.Add(1)
+	wg.Add(1) // increase by 1 the amount of goroutines to wait for
 
+	// start solving the board
 	go solve(wg, solutions, s.board, 0, 0)
 
+	// simple concurrency control pattern for this kind of concurrency implementation
 	go func(wg *sync.WaitGroup, solutions chan board.Board) {
-		wg.Wait()
-		close(solutions)
+		wg.Wait()        // wait for all goroutines to finish
+		close(solutions) // close the solutions channel
 	}(wg, solutions)
 
 	for solution := range solutions {
@@ -38,10 +48,13 @@ func (s Solver) Solve() []board.Board {
 	return output
 }
 
+// solves fills the board recursively until its full or all possible decision
+// branches are exhausted.
 func solve(wg *sync.WaitGroup, solution chan<- board.Board, current board.Board, x int, y int) {
 	defer wg.Done()
 
-	if y == 9 {
+	// if y reaches the board's height it means the board is solved
+	if y == board.Height {
 		solution <- current
 		return
 	}
@@ -51,12 +64,14 @@ func solve(wg *sync.WaitGroup, solution chan<- board.Board, current board.Board,
 		nextY = y
 	)
 
-	if nextX == 9 {
+	// if nextX reaches the board's width reset it and move to the next row
+	if nextX == board.Width {
 		nextX = 0
 		nextY = y + 1
 	}
 
-	if current[y][x] > 0 {
+	// if the current cell is already filled move to the next cell
+	if current[y][x] != board.EmptyCell {
 		wg.Add(1)
 		go solve(wg, solution, current, nextX, nextY)
 		return
